@@ -5,53 +5,31 @@ if(!$_SESSION['login']){
     header('Location: aviso.php');
 }
 
-if(isset($_POST['btn-marcar'])){
+if(isset($_POST['btn-marcar'])) {
     $mensagem = array();
-    $data = $_POST['data'];
-    $data_format = date('Y-m-d', strtotime($data));
     $horario = $_POST['horario'];
-    $idAluno = $_SESSION['ID'];
-    $selectDisciplina = $_POST['disciplina'];
+    $data = date('Y-m-d', strtotime($_POST['data']));
+    $disciplina = $_POST['disciplina'];
+    $aluno = $_SESSION['ID'];
 
-    $sql_select = "SELECT id_disciplina FROM disciplina where id_disciplina = ".$selectDisciplina."";
-    $query_select = mysqli_query($connect, $sql_select);
     
+    // Verificar se já existe uma aula marcada para a mesma disciplina e data
+    $sql = "SELECT * FROM aulas WHERE horario_aula='$horario' AND data_aula='$data' AND nome_disciplina='$disciplina'";
+    $result = mysqli_query($connect, $sql);
 
-    $sql = "SELECT DISTINCT id_aluno FROM aulas WHERE id_aluno = (SELECT DISTINCT id_aluno from aulas where id_aluno =".$idAluno.")";
-    $resultado = mysqli_query($connect, $sql);
+   if (mysqli_num_rows($result) > 0) {
+        $mensagem[] = "Já existe uma aula marcada para esta disciplina nesta data e horario.";
 
-    if(mysqli_num_rows($resultado) == 1)
-    {
-        $sql = "SELECT * FROM aulas WHERE horario_aula = '$horario'";
-        $resulta = mysqli_query($connect, $sql);
-        if(mysqli_num_rows($resulta) == 1)
-        {
-            $mensagem[] = "<li>Já há uma aula agendada neste horário. Por favor tente em um horário diferente.</li>";
-        } else if(mysqli_num_rows($query_select)) //colocado comentario depois do else 
-        {
-            $sql_insert = "INSERT INTO aulas(id_aula, horario_aula, data_aula, id_aluno, nome_disciplina) VALUES(' ', '$horario', '$data_format', '$idAluno', '$selectDisciplina')";
-            $result = mysqli_query($connect, $sql_insert);
-            $mensagem[] = "<li>Aula registada com sucesso.</li>";
-        }
-    } elseif(mysqli_num_rows($resultado) <= 0)
-        {
-           $sql_insert = "INSERT INTO aulas(id_aluno) VALUES('$idAluno')";
-           $resu = mysqli_query($connect, $sql_insert);
-          if($resu == 1)
-          {
-                $sql = "SELECT * FROM aulas WHERE horario_aula = '$horario'";
-                $resulta = mysqli_query($connect, $sql);
-                if(mysqli_num_rows($resulta) == 1)
-                {
-                    $mensagem[] = "<li>Já há uma aula agendada neste horário. Por favor tente em um horário diferente.</li>";
-                } else if(mysqli_num_rows($query_select))
-                {
-                  $sql_insert = "INSERT INTO aulas(id_aula, horario_aula, data_aula, id_aluno, nome_disciplina) VALUES(' ', '$horario', '$data_format', '$idAluno','$selectDisciplina')";
-                   $result = mysqli_query($connect, $sql_insert);
-                   $mensagem[] = "<li>Aula registada com sucesso.</li>";
-                }
-           }
-        }
+    } else {
+
+      // Inserir os dados na tabela de aulas
+      $sql = "INSERT INTO aulas (horario_aula, data_aula , id_aluno, nome_disciplina) VALUES ('$horario', '$data', '$aluno', '$disciplina')";
+      if (mysqli_query($connect, $sql)) {
+        $mensagem[] = "Aula marcada com sucesso.";
+      } else {
+        $mensagem[] = "Erro ao marcar aula: " . mysqli_error($connect);
+      }
+    }
 }
 ?>
 
@@ -70,7 +48,7 @@ if(isset($_POST['btn-marcar'])){
             <legend>Marcar aulas</legend>
 
             <label>Data:</label>
-            <input type="date" name="data" id="data" onchange="verificarFimDeSemana()">
+            <input type="date" name="data" id="data" onchange="verificarFimDeSemana()" min="<?php echo date("Y-m-d") ?>">
             <br><br>
             <label>Horario</label>
             <datalist id="horas">
@@ -97,7 +75,7 @@ if(isset($_POST['btn-marcar'])){
                     
                     if(mysqli_num_rows($res) > 0){
                         while($row = mysqli_fetch_assoc($res)){
-                            echo "<option value = '". $row['id_disciplina']."'>". $row['nome_disciplina'] . "</option>";
+                            echo "<option value = '". $row['nome_disciplina']."'>". $row['nome_disciplina'] . "</option>";
                         }
                     } else {
                         echo "0 results";
@@ -110,7 +88,7 @@ if(isset($_POST['btn-marcar'])){
             <?php
             if(!empty($mensagem)){
                 foreach($mensagem as $msg){
-                    echo $msg;
+                    echo '<br>'.$msg;
                 }
             }
             ?>

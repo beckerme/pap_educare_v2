@@ -1,11 +1,21 @@
 <?php 
 session_start();
 
+if(!$_SESSION['login']){
+    header('Location: aviso.php');
+}
+
 require_once "../connection/conn.php";
+
 $idAluno = $_SESSION['ID'];
 $sql = "SELECT * FROM aulas WHERE id_aluno =".$idAluno."";
 $resultado = mysqli_query($connect, $sql);
-// $dados = mysqli_fetch_array($resultado);
+
+if(isset($_GET['id_aula'])){
+    $_SESSION['id_aula_excluir'] = $_GET['id_aula'];
+    header('Location: confirmarExclusao.php');
+    exit;
+}
 
 
 ?>
@@ -28,7 +38,8 @@ $resultado = mysqli_query($connect, $sql);
 			<td><b>Disciplina</b></td>
 			<td><b>Alterações</b></td>
 		</tr>
-		<?php while($dados = mysqli_fetch_array($resultado)){ ?>
+		<?php 
+		while($dados = mysqli_fetch_array($resultado)){ ?>
 		<tr>
 			<td><?php echo $dados['data_aula']; ?></td>
 			<td><?php echo $dados['horario_aula']; ?></td>
@@ -36,7 +47,7 @@ $resultado = mysqli_query($connect, $sql);
 			<td>
 				<a href=""><i class="fa-solid fa-magnifying-glass"></i></a>
 				<a href=""><i class="fa-solid fa-file-arrow-down"></i></a>
-				<a href=""><i class="fa-solid fa-trash"></i></a>
+				<a href="../settings/anularAgendamento.php?id=<?php echo $dados['id_aula']; ?>"><i class="fa-solid fa-trash"></i></a>
 			</td>
 		</tr>
 		<?php } ?>
