@@ -1,11 +1,10 @@
 <?php 
+require_once "../connection/conn.php";
 session_start();
 
 if(!$_SESSION['login']){
     header('Location: aviso.php');
 }
-
-require_once "../connection/conn.php";
 
 $idAluno = $_SESSION['ID'];
 $sql = "SELECT * FROM aulas WHERE id_aluno =".$idAluno."";
@@ -30,6 +29,11 @@ if(isset($_GET['id_aula'])){
 </head>
 <body>
     <h1>Anular agendamento</h1>
+
+	<?php if(mysqli_num_rows($resultado) == 0){
+		header('Location: nao.php');
+	} else {
+		?>
     <table style="width: 50%; border: solid 1px black;">
 	<tbody>
 		<tr>
@@ -48,43 +52,18 @@ if(isset($_GET['id_aula'])){
 				<!-- <a href=""><i class="fa-solid fa-magnifying-glass"></i></a> -->
 				<a href=""><i class="fa-solid fa-file-arrow-down"></i></a>
 				<a href="../settings/anularAgendamento.php?id=<?php echo $dados['id_aula']; ?>"><i class="fa-solid fa-trash"></i></a>
-				<button onclick="openPopup()"><i class="fa-solid fa-pen"></i></button>
+				<!-- <button onclick="openPopup()"><i class="fa-solid fa-pen"></i></button> -->
+				<a href="../settings/alterarDatas.php?id=<?php echo $dados['id_aula']; ?>"><i class="fa-solid fa-pen"></i></a>
 			</td>
 		</tr>
-		<?php } ?>
+		<?php } }?>
 	</tbody>
 </table>
-
-<div id="meuPopup" style="display: none;">
-	<form action="POST" action="../settings/alterarDatas.php"<?php  ?>>
-		<input type="date" name="data"  onchange="verificarFimDeSemana()" min="<?php echo date("Y-m-d") ?>">
-		<label for="Horas">Horas</label>
-		<datalist id="horas">
-                <option value="08:00">
-                <option value="09:00">
-                <option value="10:00">
-                <option value="11:00">
-                <option value="12:00">
-                <option value="13:00">
-                <option value="14:00">
-                <option value="15:00">
-                <option value="16:00">
-                <option value="17:00">
-                <option value="18:00">
-                <option value="19:00">
-                <option value="20:00">
-                <option value="21:00">
-            </datalist>
-		<input type="time" name="horario" step="3600" list="horas" id="horario">
-
-		<input type="submit" value="Enviar" name="btn-enviar">
-	</form>
-	<button onclick="fecharPopup()">Fechar</button>
-</div>
 
 <a href="privateArea.php">Voltar</a>
 
 <script src="../../js/script.js"></script>
 <script src="teste.js"></script>
+
 </body>
 </html>
