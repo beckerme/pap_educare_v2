@@ -1,0 +1,33 @@
+header{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background-color: #001920;
+    padding: 1em 0;
+}
+
+.logotipo{
+    width: 70%;
+    border-radius: 50%;
+    border: 1px solid #fff;
+}
+
+header > nav > a {
+    margin-right: 1.2em;
+    font-size: 20px;
+    text-decoration: none;
+    color: #fff;
+
+    font-family: 'Pathway Extreme', sans-serif;
+}
+
+.header-btns > a{
+    text-decoration: none;
+    font-size: 20px;
+    margin-right: 1.2em;
+    color: #fff;
+
+    font-family: 'Pathway Extreme', sans-serif;
+    background-color: black;
+    padding: 10px;
+}

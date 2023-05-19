@@ -124,7 +124,7 @@ if(isset($_POST['btn-registo'])){
         <input type="password" name="senha_aluno" required>
 
         <button type="submit" class="enviar" name="btn-registo">Registo</button><br>
-        <a href="../../index.php">Caso tenha uma conta faça o login aqui.</a>
+        <a href="../../formLogReg.php">Caso tenha uma conta faça o login aqui.</a>
 
         <?php 
         if(!empty($mensagem)){

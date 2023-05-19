@@ -50,7 +50,7 @@ if(isset($_GET['id_aula'])){
 			<td><?php echo $dados['nome_disciplina']?></td>
 			<td>
 				<!-- <a href=""><i class="fa-solid fa-magnifying-glass"></i></a> -->
-				<a href=""><i class="fa-solid fa-file-arrow-down"></i></a>
+				<a href="../../gerarPDF/pdf.php"><i class="fa-solid fa-file-arrow-down"></i></a>
 				<a href="../settings/anularAgendamento.php?id=<?php echo $dados['id_aula']; ?>"><i class="fa-solid fa-trash"></i></a>
 				<!-- <button onclick="openPopup()"><i class="fa-solid fa-pen"></i></button> -->
 				<a href="../settings/alterarDatas.php?id=<?php echo $dados['id_aula']; ?>"><i class="fa-solid fa-pen"></i></a>

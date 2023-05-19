@@ -14,7 +14,8 @@ if(isset($_POST['btn-marcar'])) {
 
     
     // Verificar se já existe uma aula marcada para a mesma disciplina e data
-    $sql = "SELECT * FROM aulas WHERE horario_aula='$horario' AND data_aula='$data' AND nome_disciplina='$disciplina'";
+    // $sql = "SELECT * FROM aulas WHERE horario_aula='$horario' AND data_aula='$data' AND nome_disciplina='$disciplina'";
+    $sql = "SELECT * FROM aulas WHERE id_aluno='$aluno' AND horario_aula='$horario' AND data_aula='$data' OR horario_aula='$horario' AND data_aula='$data' AND nome_disciplina='$disciplina'";
     $result = mysqli_query($connect, $sql);
 
    if (mysqli_num_rows($result) > 0) {
